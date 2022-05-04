@@ -8,8 +8,8 @@ import java.sql.SQLException;
 public class ctrDAO {
 	
 	private String jdbcURL = "jdbc:mysql://localhost:3306/companytravel";
-	private String jdbcUsername = "root";
-	private String jdbcPassword = "RAja@1949.com";
+	private String jdbcUsername = "";
+	private String jdbcPassword = "";
 
 	private static final String INSERT_CUSTOMER_SQL = "INSERT INTO customer(CustomerId,custname, custaddress, custphone) VALUES (?,?, ?, ?);";
 
