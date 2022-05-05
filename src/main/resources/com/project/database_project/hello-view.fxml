@@ -1,16 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.project.database_project.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="538.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.database_project.HelloController">
+    <children>
+        <Button layoutX="250.0" layoutY="313.0" mnemonicParsing="false" onAction="#onAdd" prefHeight="35.0" prefWidth="87.0" style="-fx-background-color: #ffb200; -fx-background-radius: 20px;" text="Add" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Button>
+        <Label layoutX="102.0" layoutY="99.0" prefHeight="19.0" prefWidth="87.0" text="CustomerId:" textFill="#ffb200">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Label>
+        <Label layoutX="105.0" layoutY="150.0" prefHeight="19.0" prefWidth="80.0" text="Custname:" textFill="#ffb200">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Label>
+        <Label layoutX="105.0" layoutY="203.0" prefHeight="19.0" prefWidth="87.0" text="Custaddress:" textFill="#ffb200">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Label>
+        <Label layoutX="108.0" layoutY="253.0" prefHeight="19.0" prefWidth="80.0" text="Custphone:" textFill="#ffb200">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Label>
+        <TextField fx:id="CustomerId" layoutX="218.0" layoutY="99.0" style="-fx-background-radius: 5px; -fx-border-color: #ffb200; -fx-border-radius: 5px;" />
+        <TextField fx:id="CustName" layoutX="218.0" layoutY="150.0" style="-fx-background-radius: 5px; -fx-border-color: #ffb200; -fx-border-radius: 5px;" />
+        <TextField fx:id="CutAddress" layoutX="218.0" layoutY="203.0" style="-fx-background-radius: 5px; -fx-border-color: #ffb200; -fx-border-radius: 5px;" />
+        <TextField fx:id="CellPhone" layoutX="218.0" layoutY="253.0" style="-fx-background-radius: 5px; -fx-border-color: #ffb200; -fx-border-radius: 5px;" />
+        <Label fx:id="QuerryState" alignment="CENTER" layoutX="96.0" layoutY="60.0" prefHeight="19.0" prefWidth="373.0" style="-fx-background-color: #bfffb0;" textFill="#22a102">
+            <font>
+                <Font size="13.0" />
+            </font>
+        </Label>
+    </children>
+</Pane>
