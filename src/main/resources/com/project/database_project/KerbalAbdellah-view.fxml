@@ -1,11 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="745.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.database_project.KerbalAbdellahController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.database_project.KerbalAbdellahController">
    <children>
-      <Button layoutX="347.0" layoutY="388.0" mnemonicParsing="false" onAction="#onBack" text="Back" />
+      <Button layoutX="686.0" layoutY="413.0" mnemonicParsing="false" onAction="#onBack" prefHeight="25.0" prefWidth="51.0" text="Back" />
+      <Label alignment="CENTER" layoutX="24.0" layoutY="49.0" prefHeight="17.0" prefWidth="45.0" text="Fname:" />
+      <Label alignment="CENTER" layoutX="94.0" layoutY="50.0" prefHeight="17.0" prefWidth="45.0" text="Minit:" />
+      <Label alignment="CENTER" layoutX="170.0" layoutY="48.0" prefHeight="17.0" prefWidth="45.0" text="Lname:" />
+      <Label alignment="CENTER" layoutX="247.0" layoutY="48.0" prefHeight="17.0" prefWidth="45.0" text="Ssn:" />
+      <Label alignment="CENTER" layoutX="324.0" layoutY="48.0" prefHeight="17.0" prefWidth="45.0" text="Bdate:" />
+      <Label alignment="CENTER" layoutX="430.0" layoutY="50.0" prefHeight="17.0" prefWidth="45.0" text="Address:" />
+      <Label alignment="CENTER" layoutX="506.0" layoutY="51.0" prefHeight="17.0" prefWidth="45.0" text="Sex:" />
+      <Label alignment="CENTER" layoutX="579.0" layoutY="51.0" prefHeight="17.0" prefWidth="45.0" text="Salary:" />
+      <Label alignment="CENTER" layoutX="647.0" layoutY="51.0" prefHeight="17.0" prefWidth="65.0" text="Super_ssn:" />
+      <Label alignment="CENTER" layoutX="732.0" layoutY="51.0" prefHeight="17.0" prefWidth="45.0" text="Dno:" />
+      <TextField fx:id="Fname1" layoutX="14.0" layoutY="71.0" prefHeight="25.0" prefWidth="71.0" />
+      <TextField fx:id="Minit1" layoutX="91.0" layoutY="71.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="Lname1" layoutX="146.0" layoutY="71.0" prefHeight="25.0" prefWidth="79.0" />
+      <TextField fx:id="Ssn1" layoutX="230.0" layoutY="71.0" prefHeight="25.0" prefWidth="79.0" />
+      <TextField fx:id="Address1" layoutX="420.0" layoutY="71.0" prefHeight="25.0" prefWidth="65.0" />
+      <TextField fx:id="Sex1" layoutX="496.0" layoutY="71.0" prefHeight="25.0" prefWidth="65.0" />
+      <TextField fx:id="Salary1" layoutX="569.0" layoutY="71.0" prefHeight="25.0" prefWidth="65.0" />
+      <TextField fx:id="Super_ssn1" layoutX="641.0" layoutY="71.0" prefHeight="25.0" prefWidth="71.0" />
+      <TextField fx:id="Dno1" layoutX="722.0" layoutY="71.0" prefHeight="25.0" prefWidth="65.0" />
+      <Button fx:id="AddEmployee" layoutX="232.0" layoutY="107.0" mnemonicParsing="false" onAction="#onAddEmployee" prefHeight="25.0" prefWidth="127.0" text="Add Employee" />
+      <Button layoutX="380.0" layoutY="107.0" mnemonicParsing="false" onAction="#onUpdateEmployee" prefHeight="25.0" prefWidth="133.0" text="Update Employee" />
+      <Button layoutX="202.0" layoutY="400.0" mnemonicParsing="false" onAction="#onRemoveEmployee" prefHeight="25.0" prefWidth="120.0" text="Remove Employee" />
+      <TableView fx:id="EmployeeTbl" layoutX="2.0" layoutY="147.0" prefHeight="247.0" prefWidth="795.0">
+        <columns>
+          <TableColumn fx:id="Fname" prefWidth="70.66668963432312" text="Fname" />
+          <TableColumn fx:id="Minit" prefWidth="43.33330535888672" text="Minit" />
+            <TableColumn fx:id="Lname" prefWidth="67.33336639404297" text="Lname" />
+            <TableColumn fx:id="Ssn" prefWidth="60.666656494140625" text="Ssn" />
+            <TableColumn fx:id="Bdate" prefWidth="81.33334350585938" text="Bdate" />
+            <TableColumn fx:id="Address" prefWidth="233.77774047851562" text="Address" />
+            <TableColumn fx:id="Sex" prefWidth="66.22225952148438" text="Sex" />
+            <TableColumn fx:id="Salary" prefWidth="64.00006103515625" text="Salary" />
+            <TableColumn fx:id="Super_ssn" prefWidth="68.6666259765625" text="Super_ssn" />
+            <TableColumn fx:id="Dno" prefWidth="35.33331298828125" text="Dno" />
+        </columns>
+      </TableView>
+      <DatePicker fx:id="Bdate1" layoutX="316.0" layoutY="71.0" prefHeight="25.0" prefWidth="97.0" />
+      <Button layoutX="348.0" layoutY="400.0" mnemonicParsing="false" onAction="#onLoadEmployee" prefHeight="25.0" prefWidth="120.0" text="Load Employees" />
+      <Button layoutX="496.0" layoutY="400.0" mnemonicParsing="false" onAction="#onGetEmployee" prefHeight="25.0" prefWidth="120.0" text="Get Employee" />
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onShowquerries" prefHeight="25.0" prefWidth="120.0" text="Show Querries" />
    </children>
 </Pane>

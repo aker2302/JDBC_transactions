@@ -7,4 +7,6 @@ module com.project.database_project {
 
     opens com.project.database_project to javafx.fxml;
     exports com.project.database_project;
+    opens com.project.database_project.domain to javafx.fxml;
+    exports com.project.database_project.domain;
 }

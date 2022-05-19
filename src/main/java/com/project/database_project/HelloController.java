@@ -34,7 +34,7 @@ public class HelloController {
     void onKerbalAbdellah(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("KerbalAbdellah-view.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root,745,444);
+        scene = new Scene(root,800,444);
         stage.setScene(scene);
         stage.show();
     }
