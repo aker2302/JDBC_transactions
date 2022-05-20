@@ -4,8 +4,12 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.project.database_project.domain.*;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 public class ctrDAO {
 
@@ -16,7 +20,7 @@ public class ctrDAO {
 
     /////////////////////////////////////////// Kiouane El Mehdi ///////////////////////////////////////
 	private static final String INSERT_CUSTOMER_SQL = "INSERT INTO customer(CustomerId,custname, custaddress, custphone) VALUES (?,?, ?, ?);";
-	private static final String UPDATE_CUSTOMER_SQL = "UPDATE customer set CustomerId=?,custname=?, custaddress=?, custphone=? where CustomerId=?";
+	private static final String UPDATE_CUSTOMER_SQL = "UPDATE customer SET CustomerId=?,custname=?, custaddress=?, custphone=? WHERE CustomerId=?";
 	private static final String DELETE_CUSTOMER_SQL = "DELETE FROM customer WHERE CustomerId=?;";
 	private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer;";
 	/*TRAVEL_QUERY1 = List of the Tourguide_id and the name of the tour guides who speaks Japanese or Spanish
@@ -35,7 +39,7 @@ public class ctrDAO {
 			+ "INNER JOIN trip t ON t.GuideId=tg.GuideId "
 			+ "WHERE lan.Lang=\"English\" AND tg.GuideId=lan.GuideId "
 			+ "AND tg.GuideId IN (SELECT tg.GuideId "
-			+ "FROM tourguide as tg, languages as lan\r\n"
+			+ "FROM tourguide as tg, languages as lan "
 			+ "WHERE lan.Lang<>\"English\" AND tg.GuideId=lan.GuideId) "
 			+ "AND t.TripTo='Poland' "
 			+ "GROUP BY tg.GuideId "
@@ -338,37 +342,49 @@ public class ctrDAO {
 
 	public void insertCustomer(int CustomerId,String custname,String custaddress,String custphone) throws SQLException
 	{
-		Connection connexion =null;
-		try
+		if(countRowsCustomer(CustomerId)>0)
 		{
-			connexion=getConnection();
-			PreparedStatement preparedStatement = connexion.prepareStatement(INSERT_CUSTOMER_SQL);
-			preparedStatement.setInt(1,CustomerId);
-			preparedStatement.setString(2,custname);
-			preparedStatement.setString(3,custaddress);
-			preparedStatement.setString(4,custphone);
-			//executeUpdate() retourne le nombre de lignes affectées
-			preparedStatement.executeUpdate();
-			System.out.println("Customer Added to DB  SUCCESSFULLY");
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+	        alert.setTitle("Confirmation Dialog");
+	        alert.setHeaderText("Error Primary key exists");
+	        Optional<ButtonType> decision = alert.showAndWait();
+
 		}
-		catch (Exception e)
+		else
 		{
-			//Il vous dit ce qui s'est passé et où dans le code cela s'est produit.
-			e.printStackTrace();
+			Connection connexion =null;
+			try
+			{
+				connexion=getConnection();
+				PreparedStatement preparedStatement = connexion.prepareStatement(INSERT_CUSTOMER_SQL);
+				preparedStatement.setInt(1,CustomerId);
+				preparedStatement.setString(2,custname);
+				preparedStatement.setString(3,custaddress);
+				preparedStatement.setString(4,custphone);
+				//executeUpdate() retourne le nombre de lignes affectées
+				preparedStatement.executeUpdate();
+				System.out.println("Customer Added to DB  SUCCESSFULLY");
+			}
+			catch (Exception e)
+			{
+				//Il vous dit ce qui s'est passé et où dans le code cela s'est produit.
+				e.printStackTrace();
+			}
 		}
 	}
 
-	public void updateCustomer(int CustomerId,String custname,String custaddress,String custphone)
+	public void updateCustomer(int CustomerId_new,String custname,String custaddress,String custphone,int CustomerId)
 	{
 		Connection connexion =null;
 		try {
 			connexion=getConnection();
 			PreparedStatement preparedStatement = connexion.prepareStatement(UPDATE_CUSTOMER_SQL);
-			preparedStatement.setInt(1,CustomerId);
+			preparedStatement.setInt(1,CustomerId_new);
 			preparedStatement.setString(2,custname);
 			preparedStatement.setString(3,custaddress);
 			preparedStatement.setString(4,custphone);
-
+			preparedStatement.setInt(5,CustomerId);
+			preparedStatement.executeUpdate();
 			System.out.println("Customer Updated in DB  SUCCESSFULLY");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -405,7 +421,8 @@ public class ctrDAO {
 		}
 	}
 
-	public Object executeQuerryTravel(int number){
+	
+	public List<String> executeQuerryTravel(int number){
 		Connection connexion =null;
 
 		try {
@@ -413,21 +430,52 @@ public class ctrDAO {
 			if(number == 1){
 				Statement selectStmt = connexion.createStatement();
 				ResultSet rs = selectStmt.executeQuery(TRAVEL_QUERY1);
-				return rs;
+				// collect column names
+				List<String> MyList1 = new ArrayList<>();
+				MyList1 = ParseData(rs);
+				return MyList1;
 			} else if (number == 2) {
 				Statement selectStmt = connexion.createStatement();
 				ResultSet rs = selectStmt.executeQuery(TRAVEL_QUERY2);
-				return rs;
+				List<String> MyList2 = new ArrayList<>();
+				MyList2 = ParseData(rs);
+				return MyList2;
 			} else if (number == 3) {
 				Statement selectStmt = connexion.createStatement();
 				ResultSet rs = selectStmt.executeQuery(TRAVEL_QUERY3);
-				Object myquerry = rs;
-				return myquerry.toString();
+				List<String> MyList3 = new ArrayList<>();
+				MyList3 = ParseData(rs);
+				return MyList3;
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return null;
 	}
+	
+	public int countRowsCustomer(int Id) throws SQLException {
+		Connection connexion =null;
+		 // select the number of rows in the table
+	    Statement stmt = null;
+	    ResultSet rs = null;
+	    int rowCount = -1;
+	    
+		try {
+			connexion=getConnection();
+			 stmt = connexion.createStatement();
+		      rs = stmt.executeQuery("SELECT COUNT(*) FROM customer WHERE CustomerId= "+Id);
+		      // get the number of rows from the result set
+		      rs.next();
+		      rowCount = rs.getInt(1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		finally {
+		      rs.close();
+		      stmt.close();
+		    }
+	    
+	    return rowCount;
+	  }
 
 }

@@ -30,9 +30,9 @@ public class KiouaneElMehdiQuerriesController {
     
     @FXML
     void initialize(){
-        /*querry1Input.setDisable(true);
+        querry1Input.setDisable(true);
         querry2Input.setDisable(true);
-        querry3Input.setDisable(true);*/
+        querry3Input.setDisable(true);
         querry1Input.setText(ctrDAO.TRAVEL_QUERY1);
         querry2Input.setText(ctrDAO.TRAVEL_QUERY2);
         querry3Input.setText(ctrDAO.TRAVEL_QUERY3);
@@ -43,7 +43,7 @@ public class KiouaneElMehdiQuerriesController {
     void onExecutequerry1(ActionEvent event) {
     	
     	 int i = 1;
-         Object result = CtrDao.executeQuerry(i);
+         Object result = CtrDao.executeQuerryTravel(i);
          querry1Result.setText(String.valueOf(result));
 
     }
@@ -51,16 +51,16 @@ public class KiouaneElMehdiQuerriesController {
     @FXML
     void onExecutequerry2(ActionEvent event) {
     	 int i = 2;
-         Object result = CtrDao.executeQuerry(i);
-         querry1Result.setText(String.valueOf(result));
+         Object result = CtrDao.executeQuerryTravel(i);
+         querry2Result.setText(String.valueOf(result));
 
     }
 
     @FXML
     void onExecutequerry3(ActionEvent event) {
     	 int i = 3;
-         Object result = CtrDao.executeQuerry(i);
-         querry1Result.setText(String.valueOf(result));
+         Object result = CtrDao.executeQuerryTravel(i);
+         querry3Result.setText(String.valueOf(result));
 
     }
 

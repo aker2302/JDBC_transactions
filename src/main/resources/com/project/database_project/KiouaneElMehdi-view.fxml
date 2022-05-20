@@ -29,8 +29,7 @@
             <TableColumn fx:id="custphone" prefWidth="147.99993896484375" text="custphone" />
         </columns>
       </TableView>
-      <Button layoutX="167.0" layoutY="380.0" mnemonicParsing="false" onAction="#onRemoveCustomer" prefHeight="25.0" prefWidth="120.0" text="Remove Customer" />
-      <Button layoutX="313.0" layoutY="380.0" mnemonicParsing="false" onAction="#onLoadCustomer" prefHeight="25.0" prefWidth="120.0" text="Load Customers" />
-      <Button layoutX="461.0" layoutY="380.0" mnemonicParsing="false" onAction="#onGetCustomer" prefHeight="25.0" prefWidth="120.0" text="Get Customer" />
+      <Button layoutX="257.0" layoutY="380.0" mnemonicParsing="false" onAction="#onRemoveCustomer" prefHeight="25.0" prefWidth="120.0" text="Remove Customer" />
+      <Button layoutX="403.0" layoutY="380.0" mnemonicParsing="false" onAction="#onLoadCustomer" prefHeight="25.0" prefWidth="120.0" text="Load Customers" />
    </children>
 </Pane>
