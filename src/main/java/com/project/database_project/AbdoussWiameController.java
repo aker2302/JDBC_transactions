@@ -176,7 +176,7 @@ public class AbdoussWiameController {
     void onShowQuerries(ActionEvent event) throws IOException {
         Stage stage1 = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("AbdoussWiameQuerries-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 480);
+        Scene scene = new Scene(fxmlLoader.load(), 847, 480);
         stage1.setTitle("Querries");
         stage1.setScene(scene);
         stage1.show();

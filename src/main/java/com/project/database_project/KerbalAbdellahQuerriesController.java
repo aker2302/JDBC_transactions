@@ -45,7 +45,8 @@ public class KerbalAbdellahQuerriesController {
                 " FROM employee AS e \n"+
                 "JOIN dependent AS d ON e.Ssn=d.Essn\n" +
                 " GROUP BY e.Essn");
-        querry3Input.setText("SELECT p.Pname AS Name ,p.Plocation AS Location , d.Dname AS departement ,sum(Hours) AS Hours\n" +
+        querry3Input.setText("SELECT p.Pname AS Name ,p.Plocation AS Location\n" +
+                ", d.Dname AS departement ,sum(Hours) AS Hours\n" +
                 "FROM dbi14.works_on AS w\n" +
                 "JOIN dbi14.project AS p ON w.Pno=p.Pnumber\n" +
                 "JOIN dbi14.department AS d ON p.Dnum=d.Dnumber\n" +
