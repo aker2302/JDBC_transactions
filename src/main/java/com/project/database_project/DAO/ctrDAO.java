@@ -24,35 +24,35 @@ public class ctrDAO {
 	private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer;";
 	/*TRAVEL_QUERY1 = List of the Tourguide_id and the name of the tour guides who speaks Japanese or Spanish
 	and have accompanied a trip that offers hotels in London.*/
-	public static final String TRAVEL_QUERY1 = "SELECT DISTINCT TG.GuideId, TG.guidename "
-			+ "FROM TOURGUIDE AS TG, LANGUAGES AS L, TRIP AS T "
-			+ "WHERE  TG.GuideId = L.GuideId AND T.GuideId = TG.GuideId AND (L.Lang=\"Japanese\" OR L.Lang=\"Spanish\") "
-			+ "AND EXISTS (SELECT *\r\n"
-			+ "FROM HOTEL_TRIP AS HT, HOTEL AS H "
-			+ "WHERE H.hotelcity = \"London\" AND H.HotelId=HT.HotelId AND "
-			+ "HT.TripTo = T.TripTo AND HT.DepartureDate = T.DepartureDate) ;";
+	public static final String TRAVEL_QUERY1 = "SELECT DISTINCT TG.GuideId, TG.guidename \n"
+			+ "FROM TOURGUIDE AS TG, LANGUAGES AS L, TRIP AS T \n"
+			+ "WHERE  TG.GuideId = L.GuideId \n AND T.GuideId = TG.GuideId AND (L.Lang=\"Japanese\" OR L.Lang=\"Spanish\") \n"
+			+ "AND EXISTS (SELECT * \n"
+			+ "FROM HOTEL_TRIP AS HT, HOTEL AS H \n"
+			+ "WHERE H.hotelcity = \"London\" AND H.HotelId=HT.HotelId AND \n"
+			+ "HT.TripTo = T.TripTo AND HT.DepartureDate = T.DepartureDate) ;\n";
 	/*TRAVEL_QUERY2 = List of tour guides who speak other language besides English and
 	have gone more than 1 time in trips to Poland  */
-	public static final String TRAVEL_QUERY2 = "SELECT tg.GuideId,tg.guidename "
-			+ "FROM (tourguide tg INNER JOIN languages lan ON tg.GuideId=lan.GuideId) "
-			+ "INNER JOIN trip t ON t.GuideId=tg.GuideId "
-			+ "WHERE lan.Lang=\"English\" AND tg.GuideId=lan.GuideId "
-			+ "AND tg.GuideId IN (SELECT tg.GuideId "
-			+ "FROM tourguide as tg, languages as lan "
-			+ "WHERE lan.Lang<>\"English\" AND tg.GuideId=lan.GuideId) "
-			+ "AND t.TripTo='Poland' "
-			+ "GROUP BY tg.GuideId "
-			+ "HAVING COUNT(*)>=1; ";
+	public static final String TRAVEL_QUERY2 = "SELECT tg.GuideId,tg.guidename \n"
+			+ "FROM (tourguide tg INNER JOIN languages lan \n ON tg.GuideId=lan.GuideId) \n"
+			+ "INNER JOIN trip t ON t.GuideId=tg.GuideId \n"
+			+ "WHERE lan.Lang=\"English\" AND tg.GuideId=lan.GuideId \n"
+			+ "AND tg.GuideId IN (SELECT tg.GuideId \n"
+			+ "FROM tourguide as tg, languages as lan \n"
+			+ "WHERE lan.Lang<>\"English\" AND tg.GuideId=lan.GuideId) \n"
+			+ "AND t.TripTo='Poland' \n"
+			+ "GROUP BY tg.GuideId \n"
+			+ "HAVING COUNT(*)>=1; \n";
 
 	/*TRAVEL_QUERY3 =  name of the city with most offered hotels for trips to Laayoune. */
-	public static final String TRAVEL_QUERY3 = "SELECT hotel.hotelcity, COUNT(*) "
-			+ "from hotel inner join hotel_trip on hotel.HotelId=hotel_trip.HotelId "
-			+ "where hotel_trip.TripTo='Laayoune' "
-			+ "group by hotel.HotelId "
-			+ "having COUNT(hotel.HotelId) >= ALL(SELECT COUNT(HotelId) "
-			+ "FROM hotel_trip "
-			+ "where hotel_trip.TripTo='Laayoune' "
-			+ "GROUP BY HotelId);";
+	public static final String TRAVEL_QUERY3 = "SELECT hotel.hotelcity, COUNT(*) \n"
+			+ "from hotel inner join hotel_trip on hotel.HotelId=hotel_trip.HotelId \n"
+			+ "where hotel_trip.TripTo='Laayoune' \n"
+			+ "group by hotel.HotelId \n"
+			+ "having COUNT(hotel.HotelId) >= ALL(SELECT COUNT(HotelId) \n"
+			+ "FROM hotel_trip \n"
+			+ "where hotel_trip.TripTo='Laayoune' \n"
+			+ "GROUP BY HotelId);\n";
 
 
 

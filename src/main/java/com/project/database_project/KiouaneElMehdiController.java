@@ -178,7 +178,7 @@ public class KiouaneElMehdiController {
          FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("KiouaneElMehdiQuerries-view.fxml"));
          Scene scene = null;
 		try {
-			scene = new Scene(fxmlLoader.load(), 800, 480);
+			scene = new Scene(fxmlLoader.load(), 1300, 600);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -238,10 +238,13 @@ public class KiouaneElMehdiController {
     private void setupCustomerSelection() {
     	CustomerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
     		Customer cr=CustomerTable.getSelectionModel().getSelectedItem();
+    		if(cr!=null)
+    		{
         	CustomerIdtxt.setText(String.valueOf(cr.getCustomerId()));
         	custnametxt.setText(cr.getCustname());
         	custaddresstxt.setText(cr.getCustaddress());
         	custphonetxt.setText(cr.getCustphone());
+    		}
         });
       }
 
