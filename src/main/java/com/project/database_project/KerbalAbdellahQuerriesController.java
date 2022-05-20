@@ -5,6 +5,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
+import java.util.List;
+
 public class KerbalAbdellahQuerriesController {
 
     @FXML
@@ -39,24 +41,35 @@ public class KerbalAbdellahQuerriesController {
                 "        FROM employee_customer as ec\n" +
                 "        WHERE e.Ssn = ec.Emp_id\n" +
                 "        );");
-        querry2Input.setText("");
-        querry3Input.setText("");
+        querry2Input.setText("SELECT e.Essn , e.Salary/(count(e.Essn)+1)\n"+
+                " FROM employee AS e \n"+
+                "JOIN dependent AS d ON e.Ssn=d.Essn\n" +
+                " GROUP BY e.Essn");
+        querry3Input.setText("SELECT p.Pname AS Name ,p.Plocation AS Location , d.Dname AS departement ,sum(Hours) AS Hours\n" +
+                "FROM dbi14.works_on AS w\n" +
+                "JOIN dbi14.project AS p ON w.Pno=p.Pnumber\n" +
+                "JOIN dbi14.department AS d ON p.Dnum=d.Dnumber\n" +
+                "GROUP BY Pno;");
     }
 
     @FXML
     void onExecutequerry1(ActionEvent event) {
         int i = 1;
-        Object result = CtrDao.executeQuerry(i);
+        List<String> result = CtrDao.executeQuerry(i);
         querry1Result.setText(String.valueOf(result));
     }
 
     @FXML
     void onExecutequerry2(ActionEvent event) {
-
+        int i = 2;
+        Object result1 = CtrDao.executeQuerry(i);
+        querry2Result.setText(String.valueOf(result1.toString()));
     }
 
     @FXML
     void onExecutequerry3(ActionEvent event) {
-
+        int i = 3;
+        Object result2 = CtrDao.executeQuerry(i);
+        querry3Result.setText(String.valueOf(result2.toString()));
     }
 }

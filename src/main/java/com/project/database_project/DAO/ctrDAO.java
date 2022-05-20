@@ -19,7 +19,7 @@ public class ctrDAO {
 	private static final String UPDATE_CUSTOMER_SQL = "UPDATE customer set CustomerId=?,custname=?, custaddress=?, custphone=? where CustomerId=?";
 	private static final String DELETE_CUSTOMER_SQL = "DELETE FROM customer WHERE CustomerId=?;";
 	private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer;";
-	/*TRAVEL_QUERY1 = List of the Tourguide_id and the name of the tour guides who speaks Japanese or Spanish 
+	/*TRAVEL_QUERY1 = List of the Tourguide_id and the name of the tour guides who speaks Japanese or Spanish
 	and have accompanied a trip that offers hotels in London.*/
 	public static final String TRAVEL_QUERY1 = "SELECT DISTINCT TG.GuideId, TG.guidename "
 			+ "FROM TOURGUIDE AS TG, LANGUAGES AS L, TRIP AS T "
@@ -40,7 +40,7 @@ public class ctrDAO {
 			+ "AND t.TripTo='Poland' "
 			+ "GROUP BY tg.GuideId "
 			+ "HAVING COUNT(*)>=1; ";
-	
+
 	/*TRAVEL_QUERY3 =  name of the city with most offered hotels for trips to Laayoune. */
 	public static final String TRAVEL_QUERY3 = "SELECT hotel.hotelcity, COUNT(*) "
 			+ "from hotel inner join hotel_trip on hotel.HotelId=hotel_trip.HotelId "
@@ -50,19 +50,27 @@ public class ctrDAO {
 			+ "FROM hotel_trip "
 			+ "where hotel_trip.TripTo='Laayoune' "
 			+ "GROUP BY HotelId);";
-	
-	
+
+
 
 	/////////////////////////////////////////// Kerbal Abdellah //////////////////////////////////////////////
     private static final String INSERT_EMPLOYEE_SQL = "INSERT INTO employee(Fname,Minit,Lname,Ssn,Bdate,Address,Sex,Salary,Super_ssn,Dno) VALUES (?,?,?,?,?,?,?,?,?,?);";
 	private static final String DELETE_EMPLOYEE_SQL = "DELETE FROM employee WHERE Ssn=?;";
 	private static final String SELECT_ALL_EMPLOYEE = "SELECT * FROM employee;";
-	private static final String UPDATE_EMPLOYEE_SQL = "UPDATE employee SET  Fname=? ,Minit=? ,Lname=? , Bdate=?, Address=?, Sex=?,Salary=?,Super_ssn=?,Dno=? WHERE Ssn=?";
+	private static final String UPDATE_EMPLOYEE_SQL = "UPDATE employee SET  Fname=? ,Minit=? ,Lname=? , Ssn=? , Bdate=?, Address=?, Sex=?,Salary=?,Super_ssn=?,Dno=? WHERE Ssn=?";
 	private static final String QUERRY1_EMPLOYEE ="SELECT e.Lname FROM dbi14.employee as e WHERE NOT EXISTS(SELECT * FROM employee_customer as ec WHERE e.Ssn = ec.Emp_id );";
-	private static final String QUERRY2_EMPLOYEE ="";
-	private static final String QUERRY3_EMPLOYEE ="";
-	/////////////////////////////////////////// Abdouss Wiame /////////////////////////////////////////////////
+	private static final String QUERRY2_EMPLOYEE ="SELECT e.Fname ,e.Lname FROM dbi14.employee AS e JOIN works_on AS w ON e.Super_ssn = w.Essn WHERE Pno=2;";
+	private static final String QUERRY3_EMPLOYEE ="SELECT p.Pname AS Name ,p.Plocation AS Location , d.Dname AS departement ,sum(Hours) AS Hours FROM dbi14.works_on AS w JOIN dbi14.project AS p ON w.Pno=p.Pnumber JOIN dbi14.department AS d ON p.Dnum=d.Dnumber GROUP BY Pno;";
+	/////////////////////////////////////////// Abdouss Wiame ///////////////////////////////////////////////////
+	private static final String INSERT_RESTAURENT_SQL = "INSERT INTO restaurant(restaurname,city,capacity,rating,reportsresults2) VALUES (?,?,?,?,?);";
+	private static final String DELETE_RESTAURENT_SQL = "DELETE FROM restaurant WHERE restaurname=?;";
+	private static final String SELECT_ALL_RESTAURENT = "SELECT * FROM restaurant;";
+	private static final String UPDATE_RESTAURENT_SQL = "UPDATE restaurant SET  restaurname=? ,city=? ,capacity=? , rating=? , reportsresults2=? WHERE restaurname=?";
+	private static final String QUERRY1_RESTAURANT = "SELECT DISTINCT ft.nameId FROM dbi14.frequents AS ft WHERE ft.restaurname IN(SELECT ft1.restaurname FROM frequents AS ft1 WHERE ft1.nameId='Kevin');";
+	private static final String QUERRY2_RESTAURANT = "SELECT person.nameId FROM dbi14.person WHERE (person.age >=22) AND person.nameId = ANY(SELECT frequents.nameId FROM frequents);";
+	private static final String QUERRY3_RESTAURANT = "SELECT DISTINCT sv.restaurname FROM serves AS sv WHERE 11<= ANY(SELECT sv1.price FROM serves AS sv1 WHERE sv.restaurname=sv1.restaurname);";
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//fonction pour  etablir la connexion avec la bd
 	protected Connection getConnection()
 	{
@@ -87,7 +95,41 @@ public class ctrDAO {
 
 	}
     ////////////////////////////////////////// Kerbal Abdellah functions ////////////////////////////////////
-	public Object executeQuerry(int number){
+	public List<String> ParseData(ResultSet R) throws SQLException {
+		List<String> MyList = new ArrayList<>();
+		List<String> columnNames = new ArrayList<>();
+		ResultSetMetaData rsmd = R.getMetaData();
+		for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+			columnNames.add(rsmd.getColumnLabel(i));
+		}
+		int rowIndex = 0;
+		while (R.next()) {
+			rowIndex++;
+			// collect row data as objects in a List
+			List<Object> rowData = new ArrayList<>();
+			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+				rowData.add(R.getObject(i));
+			}
+			// for test purposes, dump contents to check our results
+			// (the real code would pass the "rowData" List to some other routine)
+			System.out.printf("Row %d%n", rowIndex);
+			for (int colIndex = 0; colIndex < rsmd.getColumnCount(); colIndex++) {
+				String objType = "null";
+				String objString = "";
+				Object columnObject = rowData.get(colIndex);
+				if (columnObject != null) {
+					objString = columnObject.toString() + " ";
+					objType = columnObject.getClass().getName();
+					String obj = "Attribut:"+columnNames.get(colIndex) + ";Value:" + objString + "\n";
+					MyList.add(obj);
+				}
+				System.out.printf("  %s: %s(%s)%n",
+						columnNames.get(colIndex), objString, objType);
+			}
+		}
+		return MyList;
+	}
+	public List<String> executeQuerry(int number){
 		Connection connexion =null;
 
 		try {
@@ -95,23 +137,29 @@ public class ctrDAO {
 			if(number == 1){
 				Statement selectStmt = connexion.createStatement();
 				ResultSet rs = selectStmt.executeQuery(QUERRY1_EMPLOYEE);
-				return rs;
+				// collect column names
+				List<String> MyList1 = new ArrayList<>();
+				MyList1 = ParseData(rs);
+				return MyList1;
 			} else if (number == 2) {
 				Statement selectStmt = connexion.createStatement();
 				ResultSet rs = selectStmt.executeQuery(QUERRY2_EMPLOYEE);
-				return rs;
+				List<String> MyList2 = new ArrayList<>();
+				MyList2 = ParseData(rs);
+				return MyList2;
 			} else if (number == 3) {
 				Statement selectStmt = connexion.createStatement();
 				ResultSet rs = selectStmt.executeQuery(QUERRY3_EMPLOYEE);
-				Object myquerry = rs;
-				return myquerry.toString();
+				List<String> MyList3 = new ArrayList<>();
+				MyList3 = ParseData(rs);
+				return MyList3;
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return null;
 	}
-	public void updateEmployee(String Fname, String Minit, String Lname, int Ssn, LocalDate Bdate, String Address, String Sex, Double Salary, int Super_ssn, int Dno){
+	public void updateEmployee(String Fname, String Minit, String Lname,int New_Ssn, LocalDate Bdate, String Address, String Sex, Double Salary, int Super_ssn, int Dno,int Old_Ssn){
 		Connection connexion =null;
 		try {
 			connexion=getConnection();
@@ -119,13 +167,14 @@ public class ctrDAO {
 			preparedStatement.setString(1,Fname);
 			preparedStatement.setString(2,Minit);
 			preparedStatement.setString(3,Lname);
-			preparedStatement.setDate(4, Date.valueOf(Bdate));
-			preparedStatement.setString(5,Address);
-			preparedStatement.setString(6,Sex);
-			preparedStatement.setDouble(7,Salary);
-			preparedStatement.setInt(8,Super_ssn);
-			preparedStatement.setInt(9,Dno);
-			preparedStatement.setInt(10,Ssn);
+			preparedStatement.setInt(4,New_Ssn);
+			preparedStatement.setDate(5, Date.valueOf(Bdate));
+			preparedStatement.setString(6,Address);
+			preparedStatement.setString(7,Sex);
+			preparedStatement.setDouble(8,Salary);
+			preparedStatement.setInt(9,Super_ssn);
+			preparedStatement.setInt(10,Dno);
+			preparedStatement.setInt(11,Old_Ssn);
 			preparedStatement.executeUpdate();
 			System.out.println("Employee Updated to DB  SUCCESSFULLY");
 		}catch(Exception e){
@@ -186,6 +235,104 @@ public class ctrDAO {
 			e.printStackTrace();
 		}
 	}
+	////////////////////////////////////////// Abdouss Wiame functions/////////////////////////////////////////////////////////
+	public void updateRestaurant(String New_restaurname, String city, int capacity, String rating, String reportsresults2,String Old_restaurname){
+		Connection connexion =null;
+		try {
+			connexion=getConnection();
+			PreparedStatement preparedStatement = connexion.prepareStatement(UPDATE_RESTAURENT_SQL);
+			preparedStatement.setString(1,New_restaurname);
+			preparedStatement.setString(2,city);
+			preparedStatement.setInt(3,capacity);
+			preparedStatement.setString(4,rating);
+			preparedStatement.setString(5, reportsresults2);
+			preparedStatement.setString(6,Old_restaurname);
+			preparedStatement.executeUpdate();
+			System.out.println("\nRestaurant Updated to DB  SUCCESSFULLY");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	public List<Restaurant> selectAllReataurant(){
+		Connection connexion =null;
+		List<Restaurant> restaurants = new ArrayList<>();
+		try {
+			connexion=getConnection();
+			Statement selectStmt = connexion.createStatement();
+			ResultSet rs = selectStmt.executeQuery(SELECT_ALL_RESTAURENT);
+			while(rs.next()){
+				Restaurant R = new Restaurant(rs.getString(1),rs.getString(2),Integer.parseInt(rs.getString(3)),rs.getString(4),rs.getString(5));
+				restaurants.add(R);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return restaurants;
+	}
+	public void deleteRestaurant(String restaurantname) throws SQLException {
+		Connection connexion =null;
+
+		try {
+			connexion=getConnection();
+			PreparedStatement preparedStatement = connexion.prepareStatement(DELETE_RESTAURENT_SQL);
+			preparedStatement.setString(1,restaurantname);
+			preparedStatement.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	public void insertRestaurant(String restaurname, String city, int capacity, String rating, String reportsresults2){
+		Connection connexion =null;
+		try
+		{
+			connexion=getConnection();
+			PreparedStatement preparedStatement = connexion.prepareStatement(INSERT_RESTAURENT_SQL);
+			preparedStatement.setString(1,restaurname);
+			preparedStatement.setString(2,city);
+			preparedStatement.setInt(3,capacity);
+			preparedStatement.setString(4,rating);
+			preparedStatement.setString(5,reportsresults2);
+			//executeUpdate() retourne le nombre de lignes affectées
+			preparedStatement.executeUpdate();
+			System.out.println("Restaurant Added to DB  SUCCESSFULLY");
+		}
+		catch (Exception e)
+		{
+			//Il vous dit ce qui s'est passé et où dans le code cela s'est produit.
+			e.printStackTrace();
+		}
+	}
+	public List<String> executeQuerryRestaurant(int number){
+		Connection connexion =null;
+
+		try {
+			connexion=getConnection();
+			if(number == 1){
+				Statement selectStmt = connexion.createStatement();
+				ResultSet rs = selectStmt.executeQuery(QUERRY1_RESTAURANT);
+				// collect column names
+				List<String> MyList1 = new ArrayList<>();
+				MyList1 = ParseData(rs);
+				return MyList1;
+			} else if (number == 2) {
+				Statement selectStmt = connexion.createStatement();
+				ResultSet rs = selectStmt.executeQuery(QUERRY2_RESTAURANT);
+				List<String> MyList2 = new ArrayList<>();
+				MyList2 = ParseData(rs);
+				return MyList2;
+			} else if (number == 3) {
+				Statement selectStmt = connexion.createStatement();
+				ResultSet rs = selectStmt.executeQuery(QUERRY3_RESTAURANT);
+				List<String> MyList3 = new ArrayList<>();
+				MyList3 = ParseData(rs);
+				return MyList3;
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////// KIOUANE El Mehdi ////////////////////////////////////////
 
@@ -210,7 +357,7 @@ public class ctrDAO {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void updateCustomer(int CustomerId,String custname,String custaddress,String custphone)
 	{
 		Connection connexion =null;
@@ -227,7 +374,7 @@ public class ctrDAO {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public List<Customer> selectAllCustomers(){
 		Connection connexion =null;
 		List<Customer> customers = new ArrayList<>();
@@ -244,7 +391,7 @@ public class ctrDAO {
 		}
 		return customers;
 	}
-	
+
 	public void deleteCustomer(int CustomerId) throws SQLException {
 		Connection connexion =null;
 
@@ -257,7 +404,7 @@ public class ctrDAO {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Object executeQuerryTravel(int number){
 		Connection connexion =null;
 

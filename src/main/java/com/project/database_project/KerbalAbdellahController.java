@@ -115,7 +115,8 @@ public class KerbalAbdellahController {
         int SuperSsnint = Integer.parseInt(Super_ssn1.getText());
         int Dnoint = Integer.parseInt(Dno1.getText());
         LocalDate Bdate2 = Bdate1.getValue();
-        CtrDao.updateEmployee(Fname1.getText(),Minit1.getText(),Lname1.getText(),Ssnint,Bdate2,Address1.getText(),Sex1.getText(),SalaryDouble,SuperSsnint,Dnoint);
+        Employee em = EmployeeTbl.getSelectionModel().getSelectedItem();
+        CtrDao.updateEmployee(Fname1.getText(),Minit1.getText(),Lname1.getText(),Ssnint,Bdate2,Address1.getText(),Sex1.getText(),SalaryDouble,SuperSsnint,Dnoint,em.getSsn());
     }
     @FXML
     void onRemoveEmployee(ActionEvent event) throws SQLException {
