@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
-
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="745.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.database_project.KiouaneElMehdiController">
    <children>
-      <Button layoutX="347.0" layoutY="393.0" mnemonicParsing="false" onAction="#onBack" text="Back" />
+      <Button layoutX="14.0" layoutY="405.0" mnemonicParsing="false" onAction="#onBack" text="Back" />
+      <Button layoutX="24.0" layoutY="24.0" mnemonicParsing="false" onAction="#onShowquerries" prefHeight="25.0" prefWidth="120.0" text="Show Querries" />
+      <Button fx:id="AddCustomer" layoutX="242.0" layoutY="117.0" mnemonicParsing="false" onAction="#onAddCustomer" prefHeight="25.0" prefWidth="127.0" text="Add Customer" />
+      <Button fx:id="UpdateCustomer" layoutX="390.0" layoutY="117.0" mnemonicParsing="false" onAction="#onUpdateCustomer" prefHeight="25.0" prefWidth="133.0" text="Update Customer" />
+      <Label alignment="CENTER" layoutX="160.0" layoutY="57.0" prefHeight="17.0" prefWidth="79.0" text="CustomerId" />
+      <Label alignment="CENTER" layoutX="257.0" layoutY="57.0" prefHeight="17.0" prefWidth="71.0" text="custname" />
+      <Label alignment="CENTER" layoutX="355.0" layoutY="57.0" prefHeight="17.0" prefWidth="71.0" text="custaddress" />
+      <Label alignment="CENTER" layoutX="458.0" layoutY="56.0" prefHeight="17.0" prefWidth="71.0" text="custphone" />
+      <TextField fx:id="CustomerIdtxt" layoutX="165.0" layoutY="79.0" prefHeight="25.0" prefWidth="71.0" />
+      <TextField fx:id="custnametxt" layoutX="257.0" layoutY="79.0" prefHeight="25.0" prefWidth="71.0" />
+      <TextField fx:id="custaddresstxt" layoutX="357.0" layoutY="79.0" prefHeight="25.0" prefWidth="79.0" />
+      <TextField fx:id="custphonetxt" layoutX="458.0" layoutY="79.0" prefHeight="25.0" prefWidth="79.0" />
+      <TableView fx:id="CustomerTable" layoutX="24.0" layoutY="168.0" prefHeight="200.0" prefWidth="700.0">
+        <columns>
+          <TableColumn fx:id="CustomerId" prefWidth="104.80003356933594" text="CustomerId" />
+          <TableColumn fx:id="custname" prefWidth="148.80003356933594" text="custname" />
+            <TableColumn fx:id="custaddress" prefWidth="298.4000244140625" text="custaddress" />
+            <TableColumn fx:id="custphone" prefWidth="147.99993896484375" text="custphone" />
+        </columns>
+      </TableView>
+      <Button layoutX="167.0" layoutY="380.0" mnemonicParsing="false" onAction="#onRemoveCustomer" prefHeight="25.0" prefWidth="120.0" text="Remove Customer" />
+      <Button layoutX="313.0" layoutY="380.0" mnemonicParsing="false" onAction="#onLoadCustomer" prefHeight="25.0" prefWidth="120.0" text="Load Customers" />
+      <Button layoutX="461.0" layoutY="380.0" mnemonicParsing="false" onAction="#onGetCustomer" prefHeight="25.0" prefWidth="120.0" text="Get Customer" />
    </children>
 </Pane>

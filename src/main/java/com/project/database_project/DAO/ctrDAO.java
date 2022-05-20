@@ -16,10 +16,42 @@ public class ctrDAO {
 
     /////////////////////////////////////////// Kiouane El Mehdi ///////////////////////////////////////
 	private static final String INSERT_CUSTOMER_SQL = "INSERT INTO customer(CustomerId,custname, custaddress, custphone) VALUES (?,?, ?, ?);";
-	private static final String SELECT_CUSTOMER_BY_ID = "SELECT * FROM customer(CustomerId,custname, custaddress, custphone) WHERE CustomerId= ?";
-	private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer(CustomerId,custname, custaddress, custphone)";
-	private static final String DELETE_CUSTOMER_SQL = "DELETE FROM customer(CustomerId,custname, custaddress, custphone);";
-	private static final String UPDATE_CUSTOMER_SQL = "UPDATE customer(CustomerId,custname, custaddress, custphone) ";
+	private static final String UPDATE_CUSTOMER_SQL = "UPDATE customer set CustomerId=?,custname=?, custaddress=?, custphone=? where CustomerId=?";
+	private static final String DELETE_CUSTOMER_SQL = "DELETE FROM customer WHERE CustomerId=?;";
+	private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer;";
+	/*TRAVEL_QUERY1 = List of the Tourguide_id and the name of the tour guides who speaks Japanese or Spanish 
+	and have accompanied a trip that offers hotels in London.*/
+	public static final String TRAVEL_QUERY1 = "SELECT DISTINCT TG.GuideId, TG.guidename "
+			+ "FROM TOURGUIDE AS TG, LANGUAGES AS L, TRIP AS T "
+			+ "WHERE  TG.GuideId = L.GuideId AND T.GuideId = TG.GuideId AND (L.Lang=\"Japanese\" OR L.Lang=\"Spanish\") "
+			+ "AND EXISTS (SELECT *\r\n"
+			+ "FROM HOTEL_TRIP AS HT, HOTEL AS H "
+			+ "WHERE H.hotelcity = \"London\" AND H.HotelId=HT.HotelId AND "
+			+ "HT.TripTo = T.TripTo AND HT.DepartureDate = T.DepartureDate) ;";
+	/*TRAVEL_QUERY2 = List of tour guides who speak other language besides English and
+	have gone more than 1 time in trips to Poland  */
+	public static final String TRAVEL_QUERY2 = "SELECT tg.GuideId,tg.guidename "
+			+ "FROM (tourguide tg INNER JOIN languages lan ON tg.GuideId=lan.GuideId) "
+			+ "INNER JOIN trip t ON t.GuideId=tg.GuideId "
+			+ "WHERE lan.Lang=\"English\" AND tg.GuideId=lan.GuideId "
+			+ "AND tg.GuideId IN (SELECT tg.GuideId "
+			+ "FROM tourguide as tg, languages as lan\r\n"
+			+ "WHERE lan.Lang<>\"English\" AND tg.GuideId=lan.GuideId) "
+			+ "AND t.TripTo='Poland' "
+			+ "GROUP BY tg.GuideId "
+			+ "HAVING COUNT(*)>=1; ";
+	
+	/*TRAVEL_QUERY3 =  name of the city with most offered hotels for trips to Laayoune. */
+	public static final String TRAVEL_QUERY3 = "SELECT hotel.hotelcity, COUNT(*) "
+			+ "from hotel inner join hotel_trip on hotel.HotelId=hotel_trip.HotelId "
+			+ "where hotel_trip.TripTo='Laayoune' "
+			+ "group by hotel.HotelId "
+			+ "having COUNT(hotel.HotelId) >= ALL(SELECT COUNT(HotelId) "
+			+ "FROM hotel_trip "
+			+ "where hotel_trip.TripTo='Laayoune' "
+			+ "GROUP BY HotelId);";
+	
+	
 
 	/////////////////////////////////////////// Kerbal Abdellah //////////////////////////////////////////////
     private static final String INSERT_EMPLOYEE_SQL = "INSERT INTO employee(Fname,Minit,Lname,Ssn,Bdate,Address,Sex,Salary,Super_ssn,Dno) VALUES (?,?,?,?,?,?,?,?,?,?);";
@@ -155,7 +187,7 @@ public class ctrDAO {
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////// KIOUANE El Mehdi ////////////////////////////////////////
 
 	public void insertCustomer(int CustomerId,String custname,String custaddress,String custphone) throws SQLException
 	{
@@ -178,6 +210,77 @@ public class ctrDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public void updateCustomer(int CustomerId,String custname,String custaddress,String custphone)
+	{
+		Connection connexion =null;
+		try {
+			connexion=getConnection();
+			PreparedStatement preparedStatement = connexion.prepareStatement(UPDATE_CUSTOMER_SQL);
+			preparedStatement.setInt(1,CustomerId);
+			preparedStatement.setString(2,custname);
+			preparedStatement.setString(3,custaddress);
+			preparedStatement.setString(4,custphone);
 
+			System.out.println("Customer Updated in DB  SUCCESSFULLY");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public List<Customer> selectAllCustomers(){
+		Connection connexion =null;
+		List<Customer> customers = new ArrayList<>();
+		try {
+			connexion=getConnection();
+			Statement selectStmt = connexion.createStatement();
+			ResultSet rs = selectStmt.executeQuery(SELECT_ALL_CUSTOMERS);
+			while(rs.next()){
+				Customer cr = new Customer(Integer.parseInt(rs.getString(1)),rs.getString(2),rs.getString(3),rs.getString(4));
+				customers.add(cr);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return customers;
+	}
+	
+	public void deleteCustomer(int CustomerId) throws SQLException {
+		Connection connexion =null;
+
+		try {
+			connexion=getConnection();
+			PreparedStatement preparedStatement = connexion.prepareStatement(DELETE_CUSTOMER_SQL);
+			preparedStatement.setInt(1,CustomerId);
+			preparedStatement.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public Object executeQuerryTravel(int number){
+		Connection connexion =null;
+
+		try {
+			connexion=getConnection();
+			if(number == 1){
+				Statement selectStmt = connexion.createStatement();
+				ResultSet rs = selectStmt.executeQuery(TRAVEL_QUERY1);
+				return rs;
+			} else if (number == 2) {
+				Statement selectStmt = connexion.createStatement();
+				ResultSet rs = selectStmt.executeQuery(TRAVEL_QUERY2);
+				return rs;
+			} else if (number == 3) {
+				Statement selectStmt = connexion.createStatement();
+				ResultSet rs = selectStmt.executeQuery(TRAVEL_QUERY3);
+				Object myquerry = rs;
+				return myquerry.toString();
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }
