@@ -9,8 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
@@ -19,10 +18,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
 
 public class AbdoussWiameController {
 
@@ -72,17 +71,36 @@ public class AbdoussWiameController {
 
     @FXML
     void onAddRestaurant(ActionEvent event) {
-        CtrDao.insertRestaurant(restaurantnameInput.getText(),cityInput.getText(),Integer.parseInt(capacityInput.getText()),ratingInput.getText(),reportsresultsInput.getText());
+        if(restaurantnameInput.getText().length()>0 && cityInput.getText().length()>0 && capacityInput.getText().length()>0 )
+        {
+            CtrDao.insertRestaurant(restaurantnameInput.getText(),cityInput.getText(),Integer.parseInt(capacityInput.getText()),Double.parseDouble(ratingInput.getText()),reportsresultsInput.getText());
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("ERROR You should Fill in all the information");
+            Optional<ButtonType> decision = alert.showAndWait();
+        }
+
     }
 
     @FXML
     void onGetRestaurant(ActionEvent event) {
         Restaurant R = RestaurantTbl.getSelectionModel().getSelectedItem();
-        restaurantnameInput.setText(R.getRestaurname());
-        cityInput.setText(R.getCity());
-        capacityInput.setText(String.valueOf(R.getCapacity()));
-        ratingInput.setText(R.getRating());
-        reportsresultsInput.setText(R.getReportsresults2());
+        if(R!=null){
+            restaurantnameInput.setText(R.getRestaurname());
+            cityInput.setText(R.getCity());
+            capacityInput.setText(String.valueOf(R.getCapacity()));
+            ratingInput.setText(String.valueOf(R.getRating()));
+            reportsresultsInput.setText(R.getReportsresults2());
+        }else{
+            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION);
+            alert2.setTitle("Confirmation Dialog");
+            alert2.setHeaderText("Error You should select a Restaurant ");
+            Optional<ButtonType> decision2 = alert2.showAndWait();
+        }
+
     }
 
     @FXML
@@ -97,14 +115,52 @@ public class AbdoussWiameController {
     @FXML
     void onRemoveRestaurant(ActionEvent event) throws SQLException {
         Restaurant R = RestaurantTbl.getSelectionModel().getSelectedItem();
-        CtrDao.deleteRestaurant(R.getRestaurname());
-        RestaurantTbl.getItems().removeAll(RestaurantTbl.getSelectionModel().getSelectedItem());
+        if(R!=null)
+        {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("Are you sure you want to delete?");
+            Optional<ButtonType> decision = alert.showAndWait();
+
+            if (decision.get() == ButtonType.OK){
+                try {
+                    CtrDao.deleteRestaurant(R.getRestaurname());
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                RestaurantTbl.getItems().removeAll(RestaurantTbl.getSelectionModel().getSelectedItem());
+
+                restaurantnameInput.setText("");
+                cityInput.setText("");
+                capacityInput.setText("");
+                ratingInput.setText("");
+                reportsresultsInput.setText("");
+            }
+        }
+        else
+        {
+            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION);
+            alert2.setTitle("Confirmation Dialog");
+            alert2.setHeaderText("Error You should select a Employee ");
+            Optional<ButtonType> decision2 = alert2.showAndWait();
+        }
     }
 
     @FXML
     void onUpdateRestaurant(ActionEvent event) {
-        Restaurant R = RestaurantTbl.getSelectionModel().getSelectedItem();
-        CtrDao.updateRestaurant(restaurantnameInput.getText(),cityInput.getText(),Integer.parseInt(capacityInput.getText()),ratingInput.getText(),reportsresultsInput.getText(),R.getRestaurname());
+        if(restaurantnameInput.getText().length()>0 && cityInput.getText().length()>0 && capacityInput.getText().length()>0)
+        {
+            Restaurant R = RestaurantTbl.getSelectionModel().getSelectedItem();
+            CtrDao.updateRestaurant(restaurantnameInput.getText(),cityInput.getText(),Integer.parseInt(capacityInput.getText()),Double.parseDouble(ratingInput.getText()),reportsresultsInput.getText(),R.getRestaurname());
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("ERROR You should Fill in all the information");
+            Optional<ButtonType> decision = alert.showAndWait();
+        }
     }
 
     @FXML

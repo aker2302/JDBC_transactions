@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.project.database_project.domain.*;
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
@@ -58,13 +57,33 @@ public class ctrDAO {
 
 
 	/////////////////////////////////////////// Kerbal Abdellah //////////////////////////////////////////////
-    private static final String INSERT_EMPLOYEE_SQL = "INSERT INTO employee(Fname,Minit,Lname,Ssn,Bdate,Address,Sex,Salary,Super_ssn,Dno) VALUES (?,?,?,?,?,?,?,?,?,?);";
-	private static final String DELETE_EMPLOYEE_SQL = "DELETE FROM employee WHERE Ssn=?;";
+	//QUERY1:insertion
+    private static final String INSERT_EMPLOYEE_SQL = "INSERT INTO employee(Fname,Minit,Lname,Ssn,Bdate,Address,Sex,Salary,Super_ssn,Dno) " +
+			                                          "VALUES (?,?,?,?,?,?,?,?,?,?);";
+	//QUERY2:remove
+	private static final String DELETE_EMPLOYEE_SQL = "DELETE FROM employee " +
+			                                          "WHERE Ssn=?;";
+	//Query3:retrieve employees
 	private static final String SELECT_ALL_EMPLOYEE = "SELECT * FROM employee;";
-	private static final String UPDATE_EMPLOYEE_SQL = "UPDATE employee SET  Fname=? ,Minit=? ,Lname=? , Ssn=? , Bdate=?, Address=?, Sex=?,Salary=?,Super_ssn=?,Dno=? WHERE Ssn=?";
-	private static final String QUERRY1_EMPLOYEE ="SELECT e.Lname FROM dbi14.employee as e WHERE NOT EXISTS(SELECT * FROM employee_customer as ec WHERE e.Ssn = ec.Emp_id );";
-	private static final String QUERRY2_EMPLOYEE ="SELECT e.Fname ,e.Lname FROM dbi14.employee AS e JOIN works_on AS w ON e.Super_ssn = w.Essn WHERE Pno=2;";
-	private static final String QUERRY3_EMPLOYEE ="SELECT p.Pname AS Name ,p.Plocation AS Location , d.Dname AS departement ,sum(Hours) AS Hours FROM dbi14.works_on AS w JOIN dbi14.project AS p ON w.Pno=p.Pnumber JOIN dbi14.department AS d ON p.Dnum=d.Dnumber GROUP BY Pno;";
+	//QUERY4:update a certain employee
+	private static final String UPDATE_EMPLOYEE_SQL = "UPDATE employee SET  Fname=? ,Minit=? ,Lname=? , Ssn=? , Bdate=?, Address=?, Sex=?,Salary=?,Super_ssn=?,Dno=? " +
+			                                          "WHERE Ssn=?";
+	//QUERY5:find employees who are not customers
+	private static final String QUERRY1_EMPLOYEE ="SELECT e.Lname FROM dbi14.employee as e " +
+			                                     "WHERE NOT EXISTS(SELECT * " +
+			                                                       "FROM employee_customer as ec " +
+			                                                       "WHERE e.Ssn = ec.Emp_id );";
+	//QUERY6:The name and last name of employee who hase a manger works in "ProjectY"
+	private static final String QUERRY2_EMPLOYEE ="SELECT e.Fname ,e.Lname " +
+			                                "FROM dbi14.employee AS e " +
+			                                "JOIN works_on AS w ON e.Super_ssn = w.Essn " +
+			                                "WHERE Pno=2;";
+	//QUERY7:The name ,location,departement and hours dedicated for each project
+	private static final String QUERRY3_EMPLOYEE ="SELECT p.Pname AS Name ,p.Plocation AS Location , d.Dname AS departement ,sum(Hours) AS Hours " +
+			                           "FROM dbi14.works_on AS w " +
+			                           "JOIN dbi14.project AS p ON w.Pno=p.Pnumber " +
+			                           "JOIN dbi14.department AS d ON p.Dnum=d.Dnumber " +
+			                           "GROUP BY Pno;";
 	/////////////////////////////////////////// Abdouss Wiame ///////////////////////////////////////////////////
 	private static final String INSERT_RESTAURENT_SQL = "INSERT INTO restaurant(restaurname,city,capacity,rating,reportsresults2) VALUES (?,?,?,?,?);";
 	private static final String DELETE_RESTAURENT_SQL = "DELETE FROM restaurant WHERE restaurname=?;";
@@ -99,6 +118,29 @@ public class ctrDAO {
 
 	}
     ////////////////////////////////////////// Kerbal Abdellah functions ////////////////////////////////////
+	public int countRowsEmployee(int Ssn) throws SQLException {
+		Connection connexion =null;
+		// select the number of rows in the table
+		Statement stmt = null;
+		ResultSet rs = null;
+		int rowCount = -1;
+
+		try {
+			connexion=getConnection();
+			stmt = connexion.createStatement();
+			rs = stmt.executeQuery("SELECT COUNT(*) FROM employee WHERE Ssn= "+Ssn);
+			// get the number of rows from the result set
+			rs.next();
+			rowCount = rs.getInt(1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		finally {
+			rs.close();
+			stmt.close();
+		}
+		return rowCount;
+	}
 	public List<String> ParseData(ResultSet R) throws SQLException {
 		List<String> MyList = new ArrayList<>();
 		List<String> columnNames = new ArrayList<>();
@@ -213,7 +255,15 @@ public class ctrDAO {
 		}
 		return employee;
 	}
-	public void insertEmployee(String Fname, String Minit, String Lname, int Ssn, LocalDate Bdate, String Address, String Sex, Double Salary, int Super_ssn, int Dno){
+	public void insertEmployee(String Fname, String Minit, String Lname, int Ssn, LocalDate Bdate, String Address, String Sex, Double Salary, int Super_ssn, int Dno) throws SQLException {
+		if(countRowsEmployee(Ssn)>0)
+		{
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+			alert.setTitle("Confirmation Dialog");
+			alert.setHeaderText("Error Primary key exists");
+			Optional<ButtonType> decision = alert.showAndWait();
+
+		}else{
 		Connection connexion =null;
 		try
 		{
@@ -238,9 +288,10 @@ public class ctrDAO {
 			//Il vous dit ce qui s'est passé et où dans le code cela s'est produit.
 			e.printStackTrace();
 		}
+		}
 	}
 	////////////////////////////////////////// Abdouss Wiame functions/////////////////////////////////////////////////////////
-	public void updateRestaurant(String New_restaurname, String city, int capacity, String rating, String reportsresults2,String Old_restaurname){
+	public void updateRestaurant(String New_restaurname, String city, int capacity, Double rating, String reportsresults2,String Old_restaurname){
 		Connection connexion =null;
 		try {
 			connexion=getConnection();
@@ -248,7 +299,7 @@ public class ctrDAO {
 			preparedStatement.setString(1,New_restaurname);
 			preparedStatement.setString(2,city);
 			preparedStatement.setInt(3,capacity);
-			preparedStatement.setString(4,rating);
+			preparedStatement.setDouble(4,rating);
 			preparedStatement.setString(5, reportsresults2);
 			preparedStatement.setString(6,Old_restaurname);
 			preparedStatement.executeUpdate();
@@ -265,8 +316,15 @@ public class ctrDAO {
 			Statement selectStmt = connexion.createStatement();
 			ResultSet rs = selectStmt.executeQuery(SELECT_ALL_RESTAURENT);
 			while(rs.next()){
-				Restaurant R = new Restaurant(rs.getString(1),rs.getString(2),Integer.parseInt(rs.getString(3)),rs.getString(4),rs.getString(5));
-				restaurants.add(R);
+				if(rs.getString(4) == null){
+					Double d = 0.0;
+					Restaurant R = new Restaurant(rs.getString(1),rs.getString(2),Integer.parseInt(rs.getString(3)),d,rs.getString(5));
+					restaurants.add(R);
+				}else{
+					Restaurant R = new Restaurant(rs.getString(1),rs.getString(2),Integer.parseInt(rs.getString(3)),Double.parseDouble(rs.getString(4)),rs.getString(5));
+					restaurants.add(R);
+				}
+
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -285,7 +343,7 @@ public class ctrDAO {
 			e.printStackTrace();
 		}
 	}
-	public void insertRestaurant(String restaurname, String city, int capacity, String rating, String reportsresults2){
+	public void insertRestaurant(String restaurname, String city, int capacity, Double rating, String reportsresults2){
 		Connection connexion =null;
 		try
 		{
@@ -294,7 +352,7 @@ public class ctrDAO {
 			preparedStatement.setString(1,restaurname);
 			preparedStatement.setString(2,city);
 			preparedStatement.setInt(3,capacity);
-			preparedStatement.setString(4,rating);
+			preparedStatement.setDouble(4,rating);
 			preparedStatement.setString(5,reportsresults2);
 			//executeUpdate() retourne le nombre de lignes affectées
 			preparedStatement.executeUpdate();
@@ -421,7 +479,7 @@ public class ctrDAO {
 		}
 	}
 
-	
+
 	public List<String> executeQuerryTravel(int number){
 		Connection connexion =null;
 
@@ -452,30 +510,30 @@ public class ctrDAO {
 		}
 		return null;
 	}
-	
+
 	public int countRowsCustomer(int Id) throws SQLException {
 		Connection connexion =null;
-		 // select the number of rows in the table
-	    Statement stmt = null;
-	    ResultSet rs = null;
-	    int rowCount = -1;
-	    
+		// select the number of rows in the table
+		Statement stmt = null;
+		ResultSet rs = null;
+		int rowCount = -1;
+
 		try {
 			connexion=getConnection();
-			 stmt = connexion.createStatement();
-		      rs = stmt.executeQuery("SELECT COUNT(*) FROM customer WHERE CustomerId= "+Id);
-		      // get the number of rows from the result set
-		      rs.next();
-		      rowCount = rs.getInt(1);
+			stmt = connexion.createStatement();
+			rs = stmt.executeQuery("SELECT COUNT(*) FROM customer WHERE CustomerId= "+Id);
+			// get the number of rows from the result set
+			rs.next();
+			rowCount = rs.getInt(1);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		finally {
-		      rs.close();
-		      stmt.close();
-		    }
-	    
-	    return rowCount;
-	  }
+			rs.close();
+			stmt.close();
+		}
+
+		return rowCount;
+	}
 
 }

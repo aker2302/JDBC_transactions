@@ -1,7 +1,8 @@
 package com.project.database_project;
 
+
 import com.project.database_project.domain.Employee;
-import javafx.collections.ObservableList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,13 +15,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
+
 import com.project.database_project.DAO.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class KerbalAbdellahController {
 
@@ -99,30 +100,83 @@ public class KerbalAbdellahController {
     private List<Employee> employees = new ArrayList<>();
 
     @FXML
-    void onAddEmployee(ActionEvent event) {
-        int Ssnint = Integer.parseInt(Ssn1.getText());
-        Double SalaryDouble = Double.parseDouble(Salary1.getText());
-        int SuperSsnint = Integer.parseInt(Super_ssn1.getText());
-        int Dnoint = Integer.parseInt(Dno1.getText());
-        LocalDate Bdate2 = Bdate1.getValue();
-        CtrDao.insertEmployee(Fname1.getText(),Minit1.getText(),Lname1.getText(),Ssnint,Bdate2,Address1.getText(),Sex1.getText(),SalaryDouble,SuperSsnint,Dnoint);
+    void onAddEmployee(ActionEvent event) throws SQLException {
+        if(Fname1.getText().length()>0 && Minit1.getText().length()>0 && Lname1.getText().length()>0 && Ssn1.getText().length()>0 && (Bdate1.getValue()!= null) && Address1.getText().length()>0 && Sex1.getText().length()>0 && Salary1.getText().length()>0 && Super_ssn1.getText().length()>0 && Dno1.getText().length()>0)
+        {
+            int Ssnint = Integer.parseInt(Ssn1.getText());
+            Double SalaryDouble = Double.parseDouble(Salary1.getText());
+            int SuperSsnint = Integer.parseInt(Super_ssn1.getText());
+            int Dnoint = Integer.parseInt(Dno1.getText());
+            LocalDate Bdate2 = Bdate1.getValue();
+            CtrDao.insertEmployee(Fname1.getText(),Minit1.getText(),Lname1.getText(),Ssnint,Bdate2,Address1.getText(),Sex1.getText(),SalaryDouble,SuperSsnint,Dnoint);
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("ERROR You should Fill in all the information");
+            Optional<ButtonType> decision = alert.showAndWait();
+        }
     }
 
     @FXML
     void onUpdateEmployee(ActionEvent event) {
-        int Ssnint = Integer.parseInt(Ssn1.getText());
-        Double SalaryDouble = Double.parseDouble(Salary1.getText());
-        int SuperSsnint = Integer.parseInt(Super_ssn1.getText());
-        int Dnoint = Integer.parseInt(Dno1.getText());
-        LocalDate Bdate2 = Bdate1.getValue();
-        Employee em = EmployeeTbl.getSelectionModel().getSelectedItem();
-        CtrDao.updateEmployee(Fname1.getText(),Minit1.getText(),Lname1.getText(),Ssnint,Bdate2,Address1.getText(),Sex1.getText(),SalaryDouble,SuperSsnint,Dnoint,em.getSsn());
+        if(Fname1.getText().length()>0 && Minit1.getText().length()>0 && Lname1.getText().length()>0 && Ssn1.getText().length()>0 && (Bdate1.getValue()!= null) && Address1.getText().length()>0 && Sex1.getText().length()>0 && Salary1.getText().length()>0 && Super_ssn1.getText().length()>0 && Dno1.getText().length()>0)
+        {
+            int Ssnint = Integer.parseInt(Ssn1.getText());
+            Double SalaryDouble = Double.parseDouble(Salary1.getText());
+            int SuperSsnint = Integer.parseInt(Super_ssn1.getText());
+            int Dnoint = Integer.parseInt(Dno1.getText());
+            LocalDate Bdate2 = Bdate1.getValue();
+            Employee em = EmployeeTbl.getSelectionModel().getSelectedItem();
+            CtrDao.updateEmployee(Fname1.getText(),Minit1.getText(),Lname1.getText(),Ssnint,Bdate2,Address1.getText(),Sex1.getText(),SalaryDouble,SuperSsnint,Dnoint,em.getSsn());
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("ERROR You should Fill in all the information");
+            Optional<ButtonType> decision = alert.showAndWait();
+        }
     }
     @FXML
     void onRemoveEmployee(ActionEvent event) throws SQLException {
         Employee em = EmployeeTbl.getSelectionModel().getSelectedItem();
-        CtrDao.deleteEmployee(em.getSsn());
-        EmployeeTbl.getItems().removeAll(EmployeeTbl.getSelectionModel().getSelectedItem());
+        if(em!=null)
+        {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("Are you sure you want to delete?");
+            Optional<ButtonType> decision = alert.showAndWait();
+
+            if (decision.get() == ButtonType.OK){
+                try {
+                    CtrDao.deleteEmployee(em.getSsn());
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                EmployeeTbl.getItems().removeAll(EmployeeTbl.getSelectionModel().getSelectedItem());
+
+                Fname1.setText("");
+                Minit1.setText("");
+                Lname1.setText("");
+                Ssn1.setText("");
+                Address1.setText("");
+                Sex1.setText("");
+                Salary1.setText("");
+                Super_ssn1.setText("");
+                Dno1.setText("");
+            }
+        }
+        else
+        {
+            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION);
+            alert2.setTitle("Confirmation Dialog");
+            alert2.setHeaderText("Error You should select a Employee ");
+            Optional<ButtonType> decision2 = alert2.showAndWait();
+        }
     }
 
     @FXML
@@ -137,16 +191,23 @@ public class KerbalAbdellahController {
     @FXML
     void onGetEmployee(ActionEvent event) {
         Employee em = EmployeeTbl.getSelectionModel().getSelectedItem();
-        Fname1.setText(em.getFname());
-        Minit1.setText(em.getMinit());
-        Lname1.setText(em.getLname());
-        Ssn1.setText(String.valueOf(em.getSsn()));
-        Bdate1.setValue(em.getBdate());
-        Address1.setText(em.getAddress());
-        Sex1.setText(em.getSex());
-        Salary1.setText(String.valueOf(em.getSalary()));
-        Super_ssn1.setText(String.valueOf(em.getSuper_ssn()));
-        Dno1.setText(String.valueOf(em.getDno()));
+        if(em!=null){
+            Fname1.setText(em.getFname());
+            Minit1.setText(em.getMinit());
+            Lname1.setText(em.getLname());
+            Ssn1.setText(String.valueOf(em.getSsn()));
+            Bdate1.setValue(em.getBdate());
+            Address1.setText(em.getAddress());
+            Sex1.setText(em.getSex());
+            Salary1.setText(String.valueOf(em.getSalary()));
+            Super_ssn1.setText(String.valueOf(em.getSuper_ssn()));
+            Dno1.setText(String.valueOf(em.getDno()));
+        }else{
+            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION);
+            alert2.setTitle("Confirmation Dialog");
+            alert2.setHeaderText("Error You should select a Employee ");
+            Optional<ButtonType> decision2 = alert2.showAndWait();
+        }
     }
 
     @FXML

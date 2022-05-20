@@ -5,10 +5,10 @@ public class Restaurant {
     private String restaurname;
     private String city;
     private int capacity;
-    private String rating;
+    private Double rating;
     private String reportsresults2;
 
-    public Restaurant(String restaurname, String city, int capacity, String rating, String reportsresults2) {
+    public Restaurant(String restaurname, String city, int capacity, Double rating, String reportsresults2) {
         this.restaurname = restaurname;
         this.city = city;
         this.capacity = capacity;
@@ -40,11 +40,11 @@ public class Restaurant {
         this.capacity = capacity;
     }
 
-    public String getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
